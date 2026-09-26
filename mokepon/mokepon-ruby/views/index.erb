@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-4" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+        <style>
+            input {
+                display: none;
+            }
+
+            input:checked + label {
+                background-color: oklch(37.9% 0.146 265.522);
+            }
+
+        </style>
+        <title>Mokepon</title>
+    </head>
+     <body class="bg-indigo-900">
+         <h1 class="text-3xl font-bold text-center text-white p-8">Mokepon 🔥💧🌱</h1>
+
+        <section id="select-mokepon" class="bg-white border border-gray-300 p-4 rounded-lg m-4 text-center">
+            <h2 class="text-lg text-center font-bold">Elige tu Mokepon</h2>
+
+            <div class="cards inline-block">
+                <div  id="cards-mokepon">
+                    <input type="radio" name="mokepon" id="hipodoge" />
+                    
+                    <label class="inline-block border border-gray-300 p-8 rounded-lg m-4" for="Hipodoge">
+                        <p class="text-center">Hipodoge</p>
+                        <img style="width:100px" src="/mokepons_mokepon_hipodoge_attack.png" alt="Hipodoge" />
+                    </label>
+                    <input type="radio" name="mokepon" id="capipepo" />
+                    <label class="inline-block border border-gray-300 p-8 rounded-lg m-4" for="Capipepo">
+                        <p class="text-center">Capipepo</p>
+                        <img style="width:100px" src="/mokepons_mokepon_capipepo_attack.png" alt="Capipepo">
+                    </label>
+                    <input type="radio" name="mokepon" id="ratigueya" />
+                    <label class="inline-block border border-gray-300 p-8 rounded-lg m-4" for="Ratigueya">
+                        <p class="text-center">Ratigueya</p>
+                        <img style="width:100px" src="/mokepons_mokepon_ratigueya_attack.png" alt="ratigueya">
+                    </label>
+                </div>
+                <p>
+                    <button id="btn-mokepon" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">Selectionar</button>
+                </p>
+            </div>           
+        </section>
+        
+        <section id="select-attack" class="bg-white border border-gray-300 p-4 rounded-lg m-4 text-center">
+            
+            <h2 class="text-lg text-center font-bold">Elige tu ataque</h2>
+            
+            <p>Tu <span id="mokepon-name" class="font-bold"></span> tiene: ❤️ <span class="font-bold" id="mokepon-lives">3</span> vidas</p>
+            <p>El <span id="enemy-name" class="font-bold"></span> enemigo tiene: ❤️ <span class="font-bold" id="enemy-lives">3</span> vidas</p>
+            
+            <p id="attack-buttons">
+                <button id="btn-fire" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Fuego 🔥</button>
+                <button id="btn-water" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Agua 💧</button>
+                <button id="btn-earth" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Tierra 🌱</button>
+            </p>
+            
+            <div id="messages" class="bg-white border border-gray-300 p-4 rounded-lg m-4">
+                <h2 class="text-lg text-center font-bold">Mensajes</h2>
+                
+                <p id="result"> Tu mascota atacó con <span id="player-attack"></span> y el enemigo con <span id="enemy-attack"></span>. Perdiste una vida. ☹️</p>
+            </div>
+        </section>
+
+        <section id="restart" class="bg-white border border-gray-300 p-4 rounded-lg m-4">
+            <button id="btn-restart" class="bg-gray-100 hover:bg-gray-200 text-black font-bold py-2 px-4 rounded">icon Reiniciar</button>
+        </section> 
+    </body>
+</html>
