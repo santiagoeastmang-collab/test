@@ -334,28 +334,18 @@ function battle() {
 
             attacksIndex(index, index)
             // messageResult("Empate")
-        } else if (ataqueJugador[index] === "FUEGO" && ataqueEnemigo[index] === "TIERRA") {
+        } else if (
+            (ataqueJugador[index] === "FUEGO" && ataqueEnemigo[index] === "TIERRA") ||
+            (ataqueJugador[index] === "AGUA" && ataqueEnemigo[index] === "FUEGO") ||
+            (ataqueJugador[index] === "TIERRA" && ataqueEnemigo[index] === "AGUA")
+        ) {
             // attacksIndex(index, index)
             jugadorWins++
 
             console.log("Ganaste" + ataqueJugador[index])
             console.log("Perdio enemigo" + ataqueEnemigo[index])          
             console.log("tu puntaje" + jugadorWins)
-
-        } else if (ataqueJugador[index] === "AGUA" && ataqueEnemigo[index] === "FUEGO") {
-            console.log("Ganaste" + ataqueJugador[index])
-            console.log("Perdio enemigo" + ataqueEnemigo[index])
-            jugadorWins++
-            console.log("tu puntaje" + jugadorWins)
-            // messageResult("Ganaste!!!")
-
-        } else if (ataqueJugador[index] === "TIERRA" && ataqueEnemigo[index] === "AGUA") {
-            console.log("Ganaste" + ataqueJugador[index])
-            console.log("Perdio enemigo" + ataqueEnemigo[index])
-            // messageResult("Ganaste!!!")
-            jugadorWins++
-            console.log("tu puntaje" + jugadorWins)
-
+            
         } else {
             // messageResult("Perdiste :'(")
             console.log("Perdiste" + ataqueJugador[index])
