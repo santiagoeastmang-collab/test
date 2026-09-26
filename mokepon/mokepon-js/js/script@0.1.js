@@ -13,12 +13,16 @@ const attacksButtons = document.getElementById("attack-buttons")
 const buttonSelectMokepon = document.getElementById("btn-mokepon")
 const mokeponName = document.getElementById("mokepon-name")
 
+
+const totalWinsMokepon = document.getElementById("victorias-mokepon")
+const totalEnemyWins = document.getElementById("victorias-enemigo")
+
 // mokepon enemy
 const mokeponEnemyName = document.getElementById("enemy-name")
 
 // count lives
-const mokeponPoints = document.getElementById("mokepon-lives")
-const enemyPoints = document.getElementById("enemy-lives")
+const mokeponPoints = document.getElementById("mokepon-attacks")
+const enemyPoints = document.getElementById("enemy-attacks")
 
 const hideAttackButtons = document.getElementById("attack-buttons")
 
@@ -30,6 +34,8 @@ let mokepones = [] // arreglo, como no sabemos el contenido aun se declara vacio
 // let => porque pueden cambiar su valor a lo largo de la ejecucion
 let ataqueJugador = []
 let ataqueEnemigo = []
+let jugadorWins = 0
+let enemigoWins = 0
 
 let mokeponesOptions
 let attacksOptions
@@ -47,8 +53,13 @@ let inputHipodoge
 let inputCapipepo
 let inputRatigueya
 
-let mokeponLives = 3
-let enemigoLives = 3
+let mokeponLives = 5
+let enemigoLives = 5
+
+
+// para guardar los index de los ataques
+let indexJugador
+let indexEnemigo
 
 // clase mokepon para definir la estructura y lo que esta por dentro
 class Mokepon {
@@ -242,6 +253,10 @@ function battleSequence () {
                 console.log(ataqueJugador)
 
             }
+
+            mokeponLives--
+            console.log(mokeponLives)
+            mokeponPoints.innerHTML = mokeponLives
             ataqueAleatorioEnemigo()
             // console.log(e)
         })
@@ -257,7 +272,6 @@ function selectMokeponEnemy() {
     // no se le asigna a la variable sino que se le agrega el resultado
     mokeponEnemyName.innerHTML = mokepones[aleatorioMokepon].name
     mokeponAttacksEnemy = mokepones[aleatorioMokepon].attacks
-     
 
     // desabilita las opciones de arriba para que no lo cambien ya que no funcionan
     inputHipodoge.disabled = true
@@ -295,60 +309,87 @@ function ataqueAleatorioEnemigo() {
 }
 
 function startBattle () {
-    if (ataqueJugador.length === 5) {}
+    if (ataqueJugador.length === 5) {
+        battle()
+    }
+}
+
+function attacksIndex(jugador, enemigo) {
+    indexJugador = ataqueJugador[jugador]
+    indexEnemigo = ataqueEnemigo[enemigo]
+
+    // console.log(indexJugador + indexEnemigo)
 }
 
 function battle() {
 
+    // for para recorrer todo el arreglo de los ataques
+    // para luego definir como se comparan
+    for (let index = 0; index < ataqueJugador.length; index++) {
 
-    // se calculan los resultados dependiendo de la seleccion de los ataques
-    if (ataqueJugador == ataqueEnemigo) {
-        messageResult("Empate")
-    } else if (
-        (ataqueJugador == "FUEGO 🔥" && ataqueEnemigo == "TIERRA 🌱") ||
-        (ataqueJugador == " AGUA 💧" && ataqueEnemigo == "FUEGO 🔥") ||
-        (ataqueJugador == "TIERRA 🌱" && ataqueEnemigo == " AGUA 💧")) {
-        messageResult("Ganaste!!!")
+        // solo calcula cuando es empate
+        if (ataqueJugador[index] === ataqueEnemigo[index]) {
+            console.log("empate:" + ataqueJugador[index])
+            console.log("empate:" + ataqueEnemigo[index])
 
-        // restar una vida al enemigo
-        // enemigo--
-        enemyPoints.innerHTML = enemigoLives
-    } else {
-        messageResult("Perdiste :'(")
+            attacksIndex(index, index)
+            // messageResult("Empate")
+        } else if (ataqueJugador[index] === "FUEGO" && ataqueEnemigo[index] === "TIERRA") {
+            // attacksIndex(index, index)
+            jugadorWins++
 
-        // restar una vida al jugador
-        // mokeponLives--
-        mokeponPoints.innerHTML = mokeponLives
+            console.log("Ganaste" + ataqueJugador[index])
+            console.log("Perdio enemigo" + ataqueEnemigo[index])          
+            console.log("tu puntaje" + jugadorWins)
+
+        } else if (ataqueJugador[index] === "AGUA" && ataqueEnemigo[index] === "FUEGO") {
+            console.log("Ganaste" + ataqueJugador[index])
+            console.log("Perdio enemigo" + ataqueEnemigo[index])
+            jugadorWins++
+            console.log("tu puntaje" + jugadorWins)
+            // messageResult("Ganaste!!!")
+
+        } else if (ataqueJugador[index] === "TIERRA" && ataqueEnemigo[index] === "AGUA") {
+            console.log("Ganaste" + ataqueJugador[index])
+            console.log("Perdio enemigo" + ataqueEnemigo[index])
+            // messageResult("Ganaste!!!")
+            jugadorWins++
+            console.log("tu puntaje" + jugadorWins)
+
+        } else {
+            // messageResult("Perdiste :'(")
+            console.log("Perdiste" + ataqueJugador[index])
+            console.log("Gano enemigo" + ataqueEnemigo[index])
+            
+            enemigoWins++
+            console.log("puntaje enemigo" + enemigoWins)
+
+        }
     }
 
-    // cuenta las vidas de acuerdo a las combinaciones
-    livesCount()
+    livesCount()    
 }
 
 function livesCount() {
-
-    if (enemigoLives == 0) {
-        battleEnd("Felicidades, ganaste el juego!!!")
-
-        hideAttackButtons.style.display = "none"
-        sectionRestart.style.display = "block"
-
-    } else if (mokeponLives == 0) {
-        battleEnd("Lo siento, perdiste el juego :'(")
-
-        hideAttackButtons.style.display = "none"
-        sectionRestart.style.display = "block"
-    }
-    
-}
-
-function messageResult(battleResult) {
     let message = document.createElement("p")
-    
-    message.innerHTML = "Tu mascota atacó con " + ataqueJugador + " y el enemigo con " + ataqueEnemigo + ". " + battleResult
 
-    // agrega el mensaje al elemento seleccionado
-    resultSection.appendChild(message) 
+    if (jugadorWins == enemigoWins) {
+        message.innerHTML = "fue un empate"
+    } else if (jugadorWins > enemigoWins) {
+         message.innerHTML = "Ganaste"
+    } else {
+         message.innerHTML = "Perdiste"
+    }
+    // battleEnd("Felicidades, ganaste el juego!!!")
+    // console.log(ataqueEnemigo)
+    hideAttackButtons.style.display = "none"
+    sectionRestart.style.display = "block"
+
+    resultSection.appendChild(message)
+
+    totalEnemyWins.innerHTML = enemigoWins
+    totalWinsMokepon.innerHTML = jugadorWins
+    
 }
 
 function battleEnd(finalResult) {

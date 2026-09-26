@@ -35,16 +35,22 @@
             <h2 class="text-lg text-center font-bold">Elige tu ataque</h2>
             
             <div class="flex content-around justify-center mt-8">
-                <p class="basis-1/3 content-center">Tu <span id="mokepon-name" class="font-bold"></span> tiene: 👊 <span class="font-bold" id="mokepon-lives">5</span> ataques</p>
+                <p class="basis-1/3 content-center">Tu <span id="mokepon-name" class="font-bold"></span></p>
                 <img style="width: 100px" src="./assets/versus.png" alt="">
-                <p class="basis-1/3 content-center">El <span id="enemy-name" class="font-bold"></span> enemigo tiene: 👊 <span class="font-bold" id="enemy-lives">5</span> ataques</p>
+                <p class="basis-1/3 content-center"><span id="enemy-name" class="font-bold"></span> enemigo </p>
+            </div>
+
+            <div>
+                <p>Tienes: <span id="mokepon-attacks">5</span> ataques 👊</p>
             </div>
             
             <div id="attack-buttons" class="inline"></div>
             
-            <div id="messages" class="bg-white border border-gray-300 p-4 rounded-lg m-4">
-                <h2 class="text-lg text-center font-bold">Mensajes</h2>
-                
+            <div id="messages" class="inline-row bg-white border border-gray-300 p-4 rounded-lg m-4">
+
+                <p class="text-center">Tus victorias: <span id="victorias-mokepon"></span></p>
+                <p class="text-center">Victorias del enemigo:<span id="victorias-enemigo"></span></p>
+               
                 <!-- <p id="result"> Tu mascota atacó con <span id="player-attack"></span> y el enemigo con <span id="enemy-attack"></span>. Perdiste una vida. ☹️</p> -->
             </div>
         </section>
