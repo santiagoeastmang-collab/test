@@ -3,6 +3,9 @@
 const sectionRestart = document.getElementById("restart")
 const restartButton = document.getElementById("btn-restart")
 
+// section mokepones
+const mokeponViewSection = document.getElementById("select-mokepon")
+
 // Botones de ataque
 const sectionSelectAttack = document.getElementById("select-attack")
 
@@ -28,7 +31,27 @@ const hideAttackButtons = document.getElementById("attack-buttons")
 
 const resultSection = document.getElementById("messages")
 
+
+// section mapa
+const mapSectionView = document.getElementById("ver-mapa")
+const map = document.getElementById("mapa")
+
+let lienzo = map.getContext("2d")
+let interval
+
+const mapBackground = new Image()
+mapBackground.src = './assets/mokemap.png'
+
+const buttonLeft = document.getElementById("button-left")
+const buttonUp = document.getElementById("button-up")
+const buttonDown = document.getElementById("button-down")
+const buttonRight = document.getElementById("button-right")
+
+
+let jugadorId = null
+
 let mokepones = [] // arreglo, como no sabemos el contenido aun se declara vacio
+let objetoMokepon
 
 // Game settings
 // let => porque pueden cambiar su valor a lo largo de la ejecucion
@@ -39,6 +62,7 @@ let enemigoWins = 0
 
 let mokeponesOptions
 let attacksOptions
+let attacks
 
 let attackSequence = []
 
@@ -63,18 +87,41 @@ let indexEnemigo
 
 // clase mokepon para definir la estructura y lo que esta por dentro
 class Mokepon {
-    constructor(name, photo, lives) { // no se pasan los ataque porque se definen despues
+    constructor(name, photo, lives, photoMap, x = 10, y = 10 ) { // no se pasan los ataque porque se definen despues
         this.name = name
         this.photo = photo
         this.lives = lives
         this.attacks = []
+        this.width = 60
+        this.height = 60
+        this.x = x
+        this.y = y
+        this.mapPhoto = new Image()
+        this.mapPhoto.src = photoMap
+        this.speedX = 0
+        this.speedY = 0
+    }
+
+    drawMokepon() {
+        lienzo.drawImage(
+            this.mapPhoto,
+            this.x,
+            this.y,
+            this.width,
+            this.height
+        )
     }
 }
 
 // se crean los objetos y sus parametros
-let hipodoge = new Mokepon("Hipodoge", "./assets/mokepons_mokepon_hipodoge_attack.png", 5)
-let capipepo = new Mokepon("Capipepo", "./assets/mokepons_mokepon_capipepo_attack.png", 5)
-let ratigueya = new Mokepon("Ratigueya", "./assets/mokepons_mokepon_ratigueya_attack.png", 5)
+let hipodoge = new Mokepon("Hipodoge", "./assets/mokepons_mokepon_hipodoge_attack.png", 5, "./assets/hipodoge.png")
+let capipepo = new Mokepon("Capipepo", "./assets/mokepons_mokepon_capipepo_attack.png", 5, "./assets/capipepo.png")
+let ratigueya = new Mokepon("Ratigueya", "./assets/mokepons_mokepon_ratigueya_attack.png", 5, "./assets/ratigueya.png")
+
+// mokepones enemigos
+let hipodogeEnemy = new Mokepon("Hipodoge", "./assets/mokepons_mokepon_hipodoge_attack.png", 5, "./assets/hipodoge.png", 340, 130)
+let capipepoEnemy = new Mokepon("Capipepo", "./assets/mokepons_mokepon_capipepo_attack.png", 5, "./assets/capipepo.png", 130, 34)
+let ratigueyaEnemy = new Mokepon("Ratigueya", "./assets/mokepons_mokepon_ratigueya_attack.png", 5, "./assets/ratigueya.png", 23, 220)
 
 // aca se definen los ataques usando el atributo attacks que esta vacio
 hipodoge.attacks.push(
@@ -90,7 +137,7 @@ capipepo.attacks.push(
     { name: '🌱', id: 'btn-earth' },
     { name: '🌱', id: 'btn-earth' },
     { name: '💧', id: 'btn-water' },
-    { name: '🔥', id: 'btn-fire' },
+    { name: '🔥', id: 'btn-fire' }, 
 )
 
 ratigueya.attacks.push(
@@ -108,6 +155,8 @@ mokepones.push(hipodoge, capipepo, ratigueya)
 window.addEventListener("load", function() {
 
     sectionSelectAttack.style.display = "none" // Oculta la sección de ataques al cargar la página
+
+    mapSectionView.style.display = "none"
     
     // para definir la lista dinamicamente en el html
     // por cada "mokepon definido arriba -> entonces agregar un html"
@@ -117,8 +166,8 @@ window.addEventListener("load", function() {
         // se le asigna el nombre y los atributos necesarios, por ahora solo nombre y foto, pero si hubieran mas se colocarian vidas, etc…
         mokeponesOptions = `
             <input type="radio" name="mokepon" id=${mokepon.name} />
-            <label class="bg-indigo-600 text-white inline-flex border border-gray-300 p-8 rounded-lg m-4" for=${mokepon.name}>
-                <p class="text-center content-center text-lg">${mokepon.name}</p>
+            <label class="flex justify-center bg-indigo-600 text-white border border-gray-300 p-8 rounded-lg m-4" for=${mokepon.name}>
+                <p class="text-lg content-center">${mokepon.name}</p>
                 <img style="width:100px" src=${mokepon.photo}>
             </label>
         `
@@ -141,12 +190,28 @@ window.addEventListener("load", function() {
     sectionRestart.style.display = "none" // oculat el boton
     restartButton.addEventListener("click", restartGame) // reinicia el juevo
 
+    // joinGame()
+
 })
 
+// function joinGame() {
+//     // obtiene la url que queremos visitar
+//     fetch("http://localhost:8080/join")
+//         // luego de obtener la respuesta, entonces ejecutamos algo
+//         .then(function (response) {
+//             console.log(response)
+//             // si la respuesta fue correcta entonces ejecutamos algo adicional
+//             if(response.ok) {
+//                 response.text()
+//                     .then(function (respuesta) {
+//                         console.log(respuesta)
+//                         jugadorId = respuesta
+//                     })
+//             }
+//         })
+// }
+
 function selectMokepon() {
-    
-    // muestra la seccion de ataques cuando se selecciona al mokepon arriba
-    sectionSelectAttack.style.display = "block"
     
     // esconde el boton de selectionar para evitar que cambien de mokepon
     buttonSelectMokepon.style.display = "none"
@@ -168,46 +233,64 @@ function selectMokepon() {
     }
     // console.log(mokepones)
 
-    // asignar el nomber a la funcion
+    // asignar el nombre a la funcion y asigna attackes para poder enviarlos al backend
+    // let attacks = showAttacks(mokeponJugador)
+    // selectedMokepon(mokeponJugador, attacks)
+    // selectedMokepon(mokeponJugador)
+
     showAttacks(mokeponJugador)
 
-    // ejecuta la funcion de eleccion de mokepon enemigo definida despues
-    selectMokeponEnemy()
+    startMap()
+
+    window.addEventListener("keydown", keyPressed)
+    window.addEventListener("keyup", stopMove)
+
 }
 
 function showAttacks(mokeponJugador) {
     // hay que definir una variable para asignarle el resultado
     // que se va a encontrar durante el loop
-    let attacks
+    // let attacks
+
+    // find busca un elemendo tendro del arreglo 
+    // mokepon es la variable que quiera, puede ser cualquier nombre 
+    // en este caso como estamos hablando de un mokepon
+    // tiene sentido que se llame asi porque queremos encontrar un atributo en este caso el nombre
+    // cuando lo encuentre se le va a asignar a el jugador
+    // del mismo objecto podemos encontrar los ataques 
+
+    objetoMokepon = mokepones.find((mokepon) => mokepon.name === mokeponJugador)
+    attacks = objetoMokepon.attacks
 
     // i empieza en 0
     // mientras i sea menor que el largo del arreglo que queramos recorrer en este caso 3
     // suma 1 a i para volver a empezar
     // y se termina hasta que i sea igual al largo del arreglo
 
-    for (let i = 0; i < mokepones.length; i++) {
-        // entonces cuando el nombre elegido sea igual
-        // al que se encuentre durante el loop
-        // se va a cumplir la condicion
-        if (mokeponJugador === mokepones[i].name) {
-            // aca se le asigna ese valor a la variable que se definio al principio
-            attacks = mokepones[i].attacks;
-        }
-    }
+    // for (let i = 0; i < mokepones.length; i++) {
+    //     // entonces cuando el nombre elegido sea igual
+    //     // al que se encuentre durante el loop
+    //     // se va a cumplir la condicion
+    //     if (mokeponJugador === mokepones[i].name) {
+    //         // aca se le asigna ese valor a la variable que se definio al principio
+    //         attacks = mokepones[i].attacks;
+
+    //         objectoMokepon = mokepones[i]
+    //     }
+    // }
 
     showAttacksList(attacks)
 
-    // console.log(mokepones)
-    // console.log(attacks) // muestra los poderes
+    console.log(objetoMokepon.photo)
+    console.log(attacks) // muestra los poderes
+    // return attacks
 }
 
 function showAttacksList(attacks) {
 
     attacks.forEach((attacks) => {
         attacksOptions = `
-        
             <button id=${attacks.id} class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-4 px-8 m-4 rounded-md attack-sequence">${attacks.name}</button>
-        
         `
 
         attacksButtons.innerHTML += attacksOptions
@@ -226,7 +309,23 @@ function showAttacksList(attacks) {
     
 }
 
+// function selectedMokepon(mokeponJugador, attacks) {
+//     fetch(`http://localhost:8080/mokepon/${jugadorId}`, {
+//         method: "post",
+//         headers: {
+//             "Content-Type" : "application/json"
+//         },
+//         body: JSON.stringify({
+//             mokepon: mokeponJugador,
+//             attacks: attacks
+//         })
+//     })
+
+//     console.log(jugadorId + mokeponJugador + attacks)
+// }
+
 // para definir la secuencia de juego
+
 function battleSequence () {
 
     attackSequence.forEach((button) => {
@@ -236,21 +335,21 @@ function battleSequence () {
                 ataqueJugador.push('FUEGO')
                 button.disabled = true
                 button.className = "bg-indigo-200 text-white font-bold py-4 px-8 m-4 rounded"
-                console.log(ataqueJugador)
+                console.log("ataque jugador: " + ataqueJugador)
 
             } else if (e.target.innerHTML === "💧") {
 
                 ataqueJugador.push('AGUA')
                 button.disabled = true
                 button.className = "bg-indigo-200 text-white font-bold py-4 px-8 m-4 rounded"
-                console.log(ataqueJugador)
+                console.log("ataque jugador: " + ataqueJugador)
 
             } else {
 
                 ataqueJugador.push('TIERRA')
                 button.disabled = true
                 button.className = "bg-indigo-200 text-white font-bold py-4 px-8 m-4 rounded"
-                console.log(ataqueJugador)
+                console.log("ataque jugador: " + ataqueJugador)
 
             }
 
@@ -264,21 +363,26 @@ function battleSequence () {
 
 }
 
-function selectMokeponEnemy() {
+function selectMokeponEnemy(enemy) {
 
     // asigna un mokepon aleatorio al enemigo
-    aleatorioMokepon = aleatorio(0, mokepones.length -1)
+    // aleatorioMokepon = aleatorio(0, mokepones.length -1)
+
+    mokeponEnemy = enemy
 
     // no se le asigna a la variable sino que se le agrega el resultado
-    mokeponEnemyName.innerHTML = mokepones[aleatorioMokepon].name
-    mokeponAttacksEnemy = mokepones[aleatorioMokepon].attacks
+    mokeponEnemyName.innerHTML = mokeponEnemy.name
+
+    const enemyAttacks = mokepones.find((mokepon) => mokepon.name === mokeponEnemy.name)
+
+    mokeponAttacksEnemy = enemyAttacks.attacks
 
     // desabilita las opciones de arriba para que no lo cambien ya que no funcionan
     inputHipodoge.disabled = true
     inputCapipepo.disabled = true
     inputRatigueya.disabled = true
 
-    console.log("paso por aca, " + mokepones[aleatorioMokepon].name)
+    console.log("mokepon enemigo, " + mokeponAttacksEnemy.length)
 
     battleSequence()
 }
@@ -287,8 +391,8 @@ function selectMokeponEnemy() {
 function ataqueAleatorioEnemigo() {
     let ataqueAleatorio = aleatorio(0, mokeponAttacksEnemy.length -1)
     // listado de ataques del mokepon enemigo
-    console.log("ataque: " + mokeponAttacksEnemy[ataqueAleatorio].name)
-    console.log(mokeponAttacksEnemy)
+    console.log("ataque enemigo: " + mokeponAttacksEnemy[ataqueAleatorio].name)
+    // console.log(mokeponAttacksEnemy)
     
 
     // mejor para usar los ataque disponibles para el mokepon seleccionado
@@ -303,7 +407,7 @@ function ataqueAleatorioEnemigo() {
     // para eliminar del array la opcion ya seleccionada por el enemigo
     mokeponAttacksEnemy.splice(ataqueAleatorio, 1);
 
-    console.log(ataqueEnemigo)
+    console.log(mokeponAttacksEnemy.length)
     // ya como los mokepones y los ataques estan seleccionados se ejecuta la funcion de batalla
     startBattle()
 }
@@ -344,8 +448,7 @@ function battle() {
 
             console.log("Ganaste" + ataqueJugador[index])
             console.log("Perdio enemigo" + ataqueEnemigo[index])          
-            console.log("tu puntaje" + jugadorWins)
-            
+
         } else {
             // messageResult("Perdiste :'(")
             console.log("Perdiste" + ataqueJugador[index])
@@ -395,4 +498,130 @@ function restartGame() {
 
 function aleatorio(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
+function startMap(){
+    // map view
+    map.width = 480
+    map.height = 320
+
+    mokeponViewSection.style.display = "none"
+    mapSectionView.style.display = "flex"
+
+    interval = setInterval(drawCanvas, 50)
+}
+
+function drawCanvas() {
+
+    objetoMokepon.x = objetoMokepon.x + objetoMokepon.speedX
+    objetoMokepon.y = objetoMokepon.y + objetoMokepon.speedY
+    lienzo.clearRect(0,0, map.clientWidth, map.clientHeight)
+
+    // pintar el fondo
+    lienzo.drawImage(
+        mapBackground,
+        0,
+        0,
+        map.width,
+        map.height
+    )
+
+    objetoMokepon.drawMokepon()
+
+    hipodogeEnemy.drawMokepon(x = 100, y = 120)
+    capipepoEnemy.drawMokepon(x = 100, y = 120)
+    ratigueyaEnemy.drawMokepon(x = 100, y = 120)
+
+    if (objetoMokepon.speedX !== 0 || objetoMokepon.speedY !==0) {
+        // collisionMokepon(mokeponEnemy)
+        collisionMokepon(capipepoEnemy)
+        collisionMokepon(ratigueyaEnemy)
+        collisionMokepon(hipodogeEnemy)
+    }
+    
+}
+
+function moveUp() {
+    objetoMokepon.speedY = -5
+    buttonUp.style.background = "oklch(79.5% 0.184 86.047)"
+}
+
+function moveDown() {
+    objetoMokepon.speedY = 5
+    buttonDown.style.background = "oklch(79.5% 0.184 86.047)"
+}
+
+function moveLeft() {
+    objetoMokepon.speedX = -5
+    buttonLeft.style.background = "oklch(79.5% 0.184 86.047)"
+}
+
+function moveRight() {
+    objetoMokepon.speedX = 5
+    buttonRight.style.background = "oklch(79.5% 0.184 86.047)"
+}
+
+function stopMove() {
+    objetoMokepon.speedX = 0
+    objetoMokepon.speedY = 0
+    buttonUp.style.background = "oklch(92.9% 0.013 255.508)"
+    buttonDown.style.background = "oklch(92.9% 0.013 255.508)"
+    buttonRight.style.background = "oklch(92.9% 0.013 255.508)"
+    buttonLeft.style.background = "oklch(92.9% 0.013 255.508)"
+}
+
+function collisionMokepon(enemy) {
+
+    // para definir las condiciones de la colision
+    const upEnemy = enemy.y
+    const downEnemy = enemy.y + enemy.height
+    const rightEnemy = enemy.x + enemy.width
+    const leftEnemy = enemy.x
+
+    // para definir las condiciones de la colision
+    const mokeponUp = objetoMokepon.y
+    const mokeponDown = objetoMokepon.y + objetoMokepon.height
+    const mokeponRight = objetoMokepon.x + objetoMokepon.width
+    const mokeponLeft = objetoMokepon.x
+
+    if(
+        mokeponDown < upEnemy ||
+        mokeponUp > downEnemy ||
+        mokeponRight < leftEnemy ||
+        mokeponLeft > rightEnemy
+    ) {
+        return 
+    } 
+
+    stopMove()
+
+    alert("a pelear!!! ")
+
+    mapSectionView.style.display ="none"
+
+    // muestra la seccion de ataques cuando se selecciona al mokepon arriba
+    sectionSelectAttack.style.display = "block"
+
+    // ejecuta la funcion de eleccion de mokepon enemigo definida despues
+    selectMokeponEnemy(enemy)
+
+}
+
+function keyPressed(event){
+    switch (event.key) {
+        case "ArrowUp":
+            moveUp()
+            break;
+        case "ArrowDown":
+            moveDown()
+            break
+        case "ArrowLeft":
+            moveLeft()
+            break
+        case "ArrowRight":
+            moveRight()
+            break
+        default:
+            break;
+    }
 }

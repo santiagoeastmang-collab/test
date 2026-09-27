@@ -223,7 +223,7 @@ function selectMokeponEnemy() {
     inputCapipepo.disabled = true
     inputRatigueya.disabled = true
 
-    console.log("paso por aca, eleccion mokepon enemigo")
+    console.log("Algo???????")
 }
 
 // se define la funcion de ataque y se le asigna a la variable definida al principio para todos los ataques disponibles
