@@ -1,5 +1,0 @@
-class => template
-
-plano casa = class
-casas = objecto
-
