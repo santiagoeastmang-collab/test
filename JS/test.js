@@ -6,6 +6,21 @@
 
 console.log("Jellow");
 
+const buttonRock = document.getElementById('rock');
+const buttonPaper = document.getElementById('paper');
+const buttonScissors = document.getElementById('scissors');
+
+const showHumanScore = document.getElementById('human-score');
+const showComputerScore = document.getElementById('computer-score');
+const results = document.getElementById('game-results');
+
+const selectionHuman = document.createElement('h4');
+const selectionComputer = document.createElement('h4');
+const choiceName = document.createElement('p');
+const gameResult = document.createElement('h5')
+
+const showHumanChoice = document.getElementById('human-results');
+const showComputerChoice = document.getElementById('computer-results');
 
 let humanScore = 0;
 let computerScore = 0;
@@ -13,26 +28,70 @@ let computerScore = 0;
 let totalGames = 0
 
 
-const humanChoice = getHumanChoice();
-const computerChoice = getComputerChoice();
 
+let humanChoice = "";
+let computerChoice = "";
 
-function getHumanChoice () {
-    const selection = prompt("Select an option between: Rock - Paper - Scissors");
-    const choice = selection.toLowerCase();
+// function getHumanChoice() {
+    buttonRock.addEventListener("click", function(event) {
+        humanChoice = event.currentTarget.id
+        console.log("clicked Rock!!!")
+        showHumanChoice.textContent = humanChoice;
+        
+        getComputerChoice()
 
-    if (choice == "rock") {
-        return choice;
-    } else if (choice == "paper") {
-        return choice;
-    } else if (choice == "scissors") {
-        return choice;
-    } else {
-        alert("invalid selection")
-        location.reload();
-    }
-    
-}
+        showComputerChoice.textContent = computerChoice;
+
+        playground (humanChoice, computerChoice)
+
+        // showHumanScore.appendChild(selectionHuman)
+        // selectionHuman.textContent = humanScore;
+
+        // showComputerScore.appendChild(selectionComputer)
+        // selectionComputer.textContent = computerScore;  
+
+    })
+
+    buttonPaper.addEventListener("click", function(event) {
+        humanChoice = event.currentTarget.id
+        console.log("clicked Paper!!!")
+        showHumanChoice.textContent = humanChoice;
+        // getHumanChoice(2);
+        // console.log(humanChoice)
+        getComputerChoice()
+
+        showComputerChoice.textContent = computerChoice;
+
+        playground (humanChoice, computerChoice)
+
+        // showHumanScore.appendChild(selectionHuman)
+        // selectionHuman.textContent = humanScore;
+
+        // showComputerScore.appendChild(selectionComputer)
+        // selectionComputer.textContent = computerScore;  
+
+    })
+
+    buttonScissors.addEventListener("click", function(event) {
+        humanChoice = event.currentTarget.id
+        console.log("clicked Scissors!!!")
+        showHumanChoice.textContent = humanChoice;
+        // getHumanChoice(3);
+        // console.log(humanChoice)
+        // getComputerChoice()
+
+        showComputerChoice.textContent = computerChoice;
+
+        playground (humanChoice, computerChoice)
+
+        // showHumanScore.appendChild(selectionHuman)
+        // selectionHuman.textContent = humanScore;
+
+        // showComputerScore.appendChild(selectionComputer)
+        // selectionComputer.textContent = computerScore;  
+
+    })
+// }
 
 
 function getComputerChoice () {
@@ -41,17 +100,14 @@ function getComputerChoice () {
     const selection = Math.floor(Math.random() * 3) + 1;
     
     if (selection === 1) {
-        return "rock";
+       computerChoice = "rock";
     } else if (selection === 2) {
-        return "paper";
+        computerChoice = "paper";
     } else {
-        return "scissors";
+        computerChoice = "scissors";
     }
     
 }
-
-console.log("computer: " + computerChoice);
-console.log("human: " + humanChoice);
 
 // playground logic
 // get human and computer choices as arguments
@@ -61,42 +117,73 @@ console.log("human: " + humanChoice);
 function playground (humanChoice, computerChoice) {
 
     console.log("human: " + humanChoice + " vs " + "Computer: " + computerChoice);
-
     if (humanChoice === computerChoice) {
-        return "it was a tie";
+        results.appendChild(gameResult)
+        gameResult.textContent = "Was a tie!"
     } else if (humanChoice === "rock" && computerChoice === "scissors") {
         humanScore++
-        // totalGames++
-        return "rock beats scissors: human wins";
+        totalGames++
+
+        results.appendChild(gameResult)
+        gameResult.textContent = "rock beats scissors: human wins"
+
     } else if (humanChoice === "scissors" && computerChoice === "paper") {
         humanScore++
-        // totalGames++
-        return "scissors beats paper: human wins";
+        totalGames++
+
+        results.appendChild(gameResult)
+        gameResult.textContent = "scissors beats paper: human wins"
+
     } else if (humanChoice === "paper" && computerChoice === "rock") {
         humanScore++
-        // totalGames++
-        return "paper beats rock: human wins";
+        totalGames++
+
+        results.appendChild(gameResult)
+        gameResult.textContent = "paper beats rock: human wins"
+
     } else {
         computerScore++
-        // totalGames++
-        return "computer wins";
+        totalGames++
+
+        results.appendChild(gameResult)
+        gameResult.textContent = `${computerChoice} beats ${humanChoice}: computer wins`
+        
     }
 
+    gameSequence(totalGames);
+}
+
+function gameSequence(totalGames, humanChoice, computerChoice) {
+    // const humanChoice = getHumanChoice();
+    // getComputerChoice();
+
+    if(totalGames < 5) {
+        
+        showHumanScore.appendChild(choiceName);
+        choiceName.textContent = humanChoice;
+        
+        showComputerScore.appendChild(choiceName);
+        choiceName.textContent = computerChoice;
+
+        showHumanScore.appendChild(selectionHuman)
+        selectionHuman.textContent = humanScore;
+
+        showComputerScore.appendChild(selectionComputer)
+        selectionComputer.textContent = computerScore;  
+
+        totalGames++
+    } else {
+        buttonRock.disabled = true;
+        buttonPaper.disabled = true;
+        buttonScissors.disabled = true;
+        
+        alert(`Human won: ${humanScore} times & Computer won: ${computerScore}`)
+        return location.reload()
+    }
 }
 
 
-while (totalGames < 5) {
-
-    // se pueden ejecutar variables adentro del loop solo al asignarlas como variables
-    const humanChoice = getHumanChoice();
-    const computerChoice = getComputerChoice();
-    const result = playground(humanChoice, computerChoice);
-
-    totalGames++
-    console.log(result);
-}
-
-alert("total human: " + humanScore + " total computer: " + computerScore);
+// alert("total human: " + humanScore + " total computer: " + computerScore);
 
 function add7(number) {
     return number + 7;

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+    <style>
+        h2{
+            margin: 16px 0px
+        }
+    </style>
+    <title>Rock Paper Scissors</title>
+</head>
+<body>
+    <h1>Rock 🪨, Paper 📃, Scissors ✂️</h1>
+    <h4>Select one option to continue:</h4>
+    <div style="text-align: center; display: flex; justify-content: space-around;">
+        <button id="rock">Play with rock 🪨</button>
+        <button id="paper">Play with paper 📃</button>
+        <button id="scissors">Play with scissors ✂️</button>
+    </div>
+    <div>
+        <h4>Selection:</h4>
+        <div id="game-results"></div>
+        <div id="results" style="display:flex; justify-content: space-between;">
+            <div style="display: block; width:100%;align-self: center;">
+                <div style="text-align: center;  padding: 8px 0px; background-color: peachpuff; border: 2px solid #f1c295; border-radius: 1rem;">
+                    <h2 id="human-results"></h2>
+                    <p>Human choice</p>
+                </div>
+                <div id="human-score" style="width:100%;text-align: center; padding: 1em;"></div>
+            </div>
+            <div style="align-self:baseline; margin: 0px 16px">
+                <h4>Vs.</h4>
+            </div>
+            <div style="display: block; width:100%;align-self: center;">
+                <div style="text-align: center; padding: 8px 0px; background-color: peachpuff; border: 2px solid #f1c295; border-radius: 1rem;">
+                    <h2 id="computer-results"></h2>
+                    <p>Computer choice</p>
+                </div>
+                <div id="computer-score" style="width:100%;text-align: center; padding: 1em;"></div>
+            </div>
+        </div>
+    </div>
+
+    <section>
+        <h4>How to play?</h4>
+        <p>Pplayed between two people, in which each player simultaneously forms one of three shapes with an outstretched hand. These shapes are "rock" (a closed fist: ✊), "paper" (a flat hand: ✋), and "scissors" (a fist with the index finger and middle finger extended, forming a V: ✌️). The earliest form of a "rock paper scissors"-style game originated in China and was subsequently imported into Japan, where it reached its modern standardized form, before being spread throughout the world in the early 20th century.</p>
+        <p><strong>It has three possible outcomes: a draw, a win, or a loss. </strong></p>
+        <li>A player who decides to play rock will beat another player who chooses scissors ("rock crushes scissors")</li>
+        <li>but will lose to one who has played paper ("paper covers rock");</li>
+        <li>a play of paper will lose to a play of scissors ("scissors cuts paper").</li>
+        <li>If both players choose the same shape, the game is tied, but is usually replayed until there is a winner.</li>
+    </section>
+    
+    <script src="test.js"></script>
+</body>
+</html>
